@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 诡秘之主 · 角色 · 事件 · 时间线 · 分析 · 讨论</title>
+    <style>
+        /* ===== 全局重置 & 主题 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background: #0d0b0e;
+            color: #e8e0d8;
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+        a {
+            color: #d4c5a0;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #121016;
+            border-bottom: 1px solid #2f2933;
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+        .navbar .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d4c5a0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .brand span {
+            color: #b8952e;
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 6px;
+            background: #1f1b22;
+            padding: 4px;
+            border-radius: 40px;
+            border: 1px solid #2f2933;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .navbar .nav-links button {
+            background: transparent;
+            border: none;
+            color: #988e82;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .navbar .nav-links button:hover {
+            color: #e8e0d8;
+            background: #2f2933;
+        }
+        .navbar .nav-links button.active {
+            background: #b8952e;
+            color: #0d0b0e;
+            box-shadow: 0 0 20px rgba(184, 149, 46, 0.25);
+        }
+        .navbar .nav-links button.active:hover {
+            background: #c8a53e;
+        }
+
+        /* ===== 主容器 ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 28px 40px;
+        }
+
+        /* ===== 页面切换 ===== */
+        .page {
+            display: none;
+            animation: fadeUp 0.35s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 首页 ===== */
+        .hero {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 700;
+            color: #d4c5a0;
+            letter-spacing: 3px;
+        }
+        .hero h1 span {
+            color: #b8952e;
+        }
+        .hero p {
+            color: #8a8076;
+            font-size: 17px;
+            margin-top: 8px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 18px;
+            max-width: 700px;
+            margin: 28px auto 18px;
+        }
+        .stats-grid .stat-card {
+            background: #1f1b22;
+            border: 1px solid #2f2933;
+            border-radius: 16px;
+            padding: 18px 12px;
+            text-align: center;
+        }
+        .stats-grid .stat-card .num {
+            font-size: 34px;
+            font-weight: 700;
+            color: #b8952e;
+        }
+        .stats-grid .stat-card .label {
+            font-size: 13px;
+            color: #8a8076;
+            margin-top: 2px;
+        }
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin: 20px 0 10px;
+        }
+        .quick-links .ql {
+            background: #1f1b22;
+            border: 1px solid #2f2933;
+            border-radius: 40px;
+            padding: 10px 28px;
+            color: #d4c5a0;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quick-links .ql:hover {
+            background: #b8952e;
+            color: #0d0b0e;
+            border-color: #b8952e;
+            box-shadow: 0 0 30px rgba(184, 149, 46, 0.15);
+        }
+
+        /* ===== 作品信息卡片 ===== */
+        .book-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 20px 0 16px;
+        }
+        @media (max-width: 780px) {
+            .book-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .book-card {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 18px;
+            padding: 20px 24px 24px;
+        }
+        .book-card h3 {
+            color: #d4c5a0;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #2a2430;
+            padding-bottom: 8px;
+        }
+        .book-card .label {
+            color: #7a7066;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .book-card .value {
+            color: #e8e0d8;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .book-card .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .book-card .tag-group .tag {
+            font-size: 12px;
+            padding: 2px 14px;
+            border-radius: 30px;
+            background: #2a2430;
+            color: #b5aaa0;
+            border: 1px solid #3a3440;
+        }
+        .book-card .tag-group .tag.gold {
+            background: #b8952e;
+            color: #0d0b0e;
+            border-color: #b8952e;
+        }
+        .book-card .tag-group .tag.blue {
+            background: #2a4a6a;
+            color: #c8dce8;
+            border-color: #3a5a7a;
+        }
+        .book-card .tag-group .tag.purple {
+            background: #4a2a5a;
+            color: #d8c8e8;
+            border-color: #5a3a6a;
+        }
+        .book-card .tag-group .tag.green {
+            background: #2a4a3a;
+            color: #c8e8d0;
+            border-color: #3a5a4a;
+        }
+        .book-card .tag-group .tag.red {
+            background: #5a2a2a;
+            color: #e8c8c8;
+            border-color: #6a3a3a;
+        }
+
+        /* ===== 用户画像图表 ===== */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 10px 0 14px;
+        }
+        .chart-box {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 16px;
+            padding: 16px 18px 18px;
+        }
+        .chart-box h4 {
+            color: #d4c5a0;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .chart-box .bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .chart-box .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chart-box .bar-row .label {
+            font-size: 12px;
+            color: #b5aaa0;
+            width: 60px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .chart-box .bar-row .bar-track {
+            flex: 1;
+            height: 20px;
+            background: #2a2430;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .chart-box .bar-row .bar-track .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0d0b0e;
+        }
+        .chart-box .bar-row .pct {
+            font-size: 12px;
+            color: #b5aaa0;
+            width: 40px;
+            flex-shrink: 0;
+        }
+        .chart-box .source-note {
+            font-size: 11px;
+            color: #6a6056;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .chart-box .pie-sample {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin: 6px 0 4px;
+        }
+        .chart-box .pie-sample .item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #b5aaa0;
+        }
+        .chart-box .pie-sample .item .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== 角色页面 ===== */
+        .faction-block {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 20px;
+            padding: 22px 26px 28px;
+            margin-bottom: 28px;
+            transition: border-color 0.3s;
+        }
+        .faction-block:hover {
+            border-color: #4a4350;
+        }
+        .faction-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2a2430;
+        }
+        .faction-header .icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .faction-header .name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #d4c5a0;
+        }
+        .faction-header .count {
+            font-size: 13px;
+            color: #7a7066;
+            background: #2a2430;
+            padding: 2px 14px;
+            border-radius: 40px;
+            margin-left: auto;
+        }
+        .faction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+        .char-card {
+            background: #1f1b22;
+            border: 1px solid #2f2933;
+            border-radius: 14px;
+            padding: 14px 16px 12px;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+        .char-card:hover {
+            border-color: #b8952e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .char-card .name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e8e0d8;
+        }
+        .char-card .sub {
+            font-size: 12px;
+            color: #a0958a;
+            margin-top: 2px;
+        }
+        .char-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            margin-top: 8px;
+        }
+        .char-card .tags .tag {
+            font-size: 10px;
+            padding: 1px 10px;
+            border-radius: 30px;
+            background: #2a2430;
+            color: #b5aaa0;
+            border: 1px solid #3a3440;
+        }
+        .char-card .tags .tag.gold {
+            background: #b8952e;
+            color: #0d0b0e;
+            border-color: #b8952e;
+        }
+        .char-card .chapter {
+            font-size: 11px;
+            color: #6a6056;
+            margin-top: 6px;
+        }
+        .char-card .click-hint {
+            font-size: 10px;
+            color: #6a6056;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #1f1b22;
+            border: 1px solid #4a4350;
+            border-radius: 24px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 28px 32px 32px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-box .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #7a7066;
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .modal-box .close-btn:hover {
+            color: #e8e0d8;
+        }
+        .modal-box .modal-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #d4c5a0;
+            margin-bottom: 2px;
+        }
+        .modal-box .modal-alias {
+            font-size: 15px;
+            color: #a0958a;
+            margin-bottom: 12px;
+        }
+        .modal-box .modal-section {
+            margin-top: 14px;
+        }
+        .modal-box .modal-section .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7a7066;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .modal-box .modal-section .value {
+            font-size: 14px;
+            color: #e8e0d8;
+            line-height: 1.6;
+        }
+        .modal-box .modal-section .value.gold {
+            color: #b8952e;
+        }
+        .modal-box .modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .modal-box .modal-tags .tag {
+            font-size: 11px;
+            padding: 2px 14px;
+            border-radius: 30px;
+            background: #2a2430;
+            color: #b5aaa0;
+            border: 1px solid #3a3440;
+        }
+        .modal-box .modal-tags .tag.gold {
+            background: #b8952e;
+            color: #0d0b0e;
+            border-color: #b8952e;
+        }
+        .modal-box .modal-chapter {
+            font-size: 12px;
+            color: #6a6056;
+            margin-top: 10px;
+            border-top: 1px solid #2a2430;
+            padding-top: 10px;
+        }
+
+        /* ===== 事件页面 ===== */
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .event-card {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 18px;
+            padding: 20px 22px 22px;
+            transition: all 0.25s;
+        }
+        .event-card:hover {
+            border-color: #4a4350;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .event-card .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .event-card .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d4c5a0;
+        }
+        .event-card .heat {
+            display: flex;
+            gap: 2px;
+            font-size: 14px;
+            color: #b8952e;
+            white-space: nowrap;
+        }
+        .event-card .heat .dim {
+            opacity: 0.2;
+        }
+        .event-card .desc {
+            font-size: 14px;
+            color: #b5aaa0;
+            margin: 8px 0 10px;
+            line-height: 1.6;
+        }
+        .event-card .quote {
+            font-size: 13px;
+            color: #d4c5a0;
+            background: #1f1b22;
+            border-left: 3px solid #b8952e;
+            padding: 8px 14px;
+            margin: 8px 0 10px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .event-card .meta {
+            font-size: 12px;
+            color: #7a7066;
+        }
+        .event-card .meta strong {
+            color: #a0958a;
+            font-weight: 600;
+        }
+        .event-card .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .event-card .badge-group .badge {
+            font-size: 11px;
+            padding: 2px 14px;
+            border-radius: 30px;
+            background: #2a2430;
+            color: #b5aaa0;
+            border: 1px solid #3a3440;
+        }
+
+        /* ===== 时间线页面 ===== */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            border-left: 3px solid #b8952e;
+            margin: 10px 0 20px;
+        }
+        .timeline-item {
+            margin-bottom: 32px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -46px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #b8952e;
+            border: 3px solid #0d0b0e;
+            box-shadow: 0 0 0 3px #b8952e;
+        }
+        .timeline-item .time {
+            font-size: 14px;
+            font-weight: 700;
+            color: #b8952e;
+            margin-bottom: 4px;
+        }
+        .timeline-item .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d4c5a0;
+        }
+        .timeline-item .desc {
+            font-size: 14px;
+            color: #b5aaa0;
+            margin: 4px 0 6px;
+            line-height: 1.6;
+        }
+        .timeline-item .quote {
+            font-size: 13px;
+            color: #d4c5a0;
+            background: #1f1b22;
+            border-left: 3px solid #b8952e;
+            padding: 8px 14px;
+            margin: 6px 0 8px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* ===== 分析页面 ===== */
+        .analysis-section {
+            margin-bottom: 32px;
+        }
+        .analysis-section h2 {
+            font-size: 26px;
+            color: #d4c5a0;
+            border-left: 4px solid #b8952e;
+            padding-left: 16px;
+            margin-bottom: 16px;
+        }
+        .analysis-section h3 {
+            font-size: 20px;
+            color: #d4c5a0;
+            margin: 20px 0 10px;
+        }
+        .analysis-section h4 {
+            font-size: 17px;
+            color: #b5aaa0;
+            margin: 16px 0 8px;
+        }
+        .analysis-section p {
+            color: #b5aaa0;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        .analysis-section .highlight {
+            color: #d4c5a0;
+            font-weight: 600;
+        }
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0 18px;
+            font-size: 14px;
+            background: #16131a;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .analysis-table th {
+            background: #2a2430;
+            color: #d4c5a0;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .analysis-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #2a2430;
+            color: #b5aaa0;
+        }
+        .analysis-table tr:last-child td {
+            border-bottom: none;
+        }
+        .source-list {
+            list-style: none;
+            padding: 0;
+        }
+        .source-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid #2a2430;
+            font-size: 13px;
+            color: #b5aaa0;
+        }
+        .source-list li:last-child {
+            border-bottom: none;
+        }
+        .source-list li strong {
+            color: #d4c5a0;
+        }
+        .source-list li a {
+            color: #b8952e;
+        }
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 12px 0 16px;
+        }
+        .emotion-card {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 14px;
+            padding: 16px 18px;
+        }
+        .emotion-card .emotion-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .emotion-card .emotion-pct {
+            font-size: 28px;
+            font-weight: 700;
+            color: #b8952e;
+        }
+        .emotion-card .emotion-desc {
+            font-size: 13px;
+            color: #a0958a;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+        .analysis-section .table-wrap {
+            overflow-x: auto;
+        }
+
+        /* ===== 讨论页面 (v6.0) ===== */
+        .discussion-block {
+            margin-bottom: 32px;
+        }
+        .discussion-block h2 {
+            font-size: 26px;
+            color: #d4c5a0;
+            border-left: 4px solid #b8952e;
+            padding-left: 16px;
+            margin-bottom: 16px;
+        }
+        .discussion-block h3 {
+            font-size: 20px;
+            color: #d4c5a0;
+            margin: 20px 0 10px;
+        }
+        .discussion-block p {
+            color: #b5aaa0;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        .discussion-block .highlight {
+            color: #d4c5a0;
+            font-weight: 600;
+        }
+        .discussion-block .quote-box {
+            background: #1f1b22;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin: 12px 0;
+            border-left: 3px solid #b8952e;
+        }
+        .discussion-block .quote-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #b5aaa0;
+            line-height: 1.8;
+        }
+        .discussion-block .source-tag {
+            font-size: 13px;
+            color: #6a6056;
+            background: #1f1b22;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .discussion-block ul {
+            color: #b5aaa0;
+            line-height: 2;
+            margin-left: 20px;
+            list-style-type: disc;
+        }
+        .discussion-block ul li {
+            padding: 2px 0;
+        }
+        .discussion-block .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 10px 0;
+        }
+        .discussion-block .stat-card-mini {
+            background: #1f1b22;
+            padding: 14px;
+            border-radius: 10px;
+            border-left: 3px solid #b8952e;
+        }
+        .discussion-block .stat-card-mini .num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #b8952e;
+        }
+        .discussion-block .stat-card-mini .label {
+            font-size: 13px;
+            color: #7a7066;
+        }
+        .discussion-block .stat-card-mini .desc {
+            font-size: 12px;
+            color: #a0958a;
+            margin-top: 2px;
+        }
+
+        /* ===== 数据来源 & 版本 ===== */
+        .sources-section {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 16px;
+            padding: 18px 22px;
+            margin-top: 24px;
+        }
+        .sources-section h3 {
+            color: #d4c5a0;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .sources-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sources-section ul li {
+            font-size: 13px;
+            color: #b5aaa0;
+            padding: 4px 0;
+            border-bottom: 1px solid #2a2430;
+        }
+        .sources-section ul li:last-child {
+            border-bottom: none;
+        }
+        .sources-section ul li a {
+            color: #b8952e;
+        }
+        .sources-section ul li .note {
+            color: #7a7066;
+            font-size: 12px;
+        }
+
+        .version-section {
+            background: #16131a;
+            border: 1px solid #2a2430;
+            border-radius: 16px;
+            padding: 18px 22px;
+            margin-top: 20px;
+        }
+        .version-section h3 {
+            color: #d4c5a0;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .version-section .version-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2430;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .version-section .version-item:last-child {
+            border-bottom: none;
+        }
+        .version-section .version-item .ver {
+            font-weight: 700;
+            color: #b8952e;
+            margin-right: 10px;
+        }
+        .version-section .version-item .desc {
+            color: #b5aaa0;
+        }
+        .version-section .version-item .desc strong {
+            color: #d4c5a0;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 780px) {
+            body {
+                padding-top: 60px;
+            }
+            .navbar {
+                padding: 0 16px;
+                height: auto;
+                min-height: 56px;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            .navbar .brand {
+                font-size: 16px;
+                gap: 6px;
+            }
+            .navbar .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            .navbar .nav-links button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            .container {
+                padding: 16px 14px 32px;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+            .faction-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .event-grid {
+                grid-template-columns: 1fr;
+            }
+            .faction-block {
+                padding: 16px 16px 20px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .timeline {
+                padding-left: 24px;
+            }
+            .timeline-item::before {
+                left: -30px;
+                width: 12px;
+                height: 12px;
+            }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-box {
+                padding: 20px 22px;
+                max-width: 95%;
+            }
+            .analysis-table {
+                font-size: 12px;
+            }
+            .analysis-table th,
+            .analysis-table td {
+                padding: 6px 10px;
+            }
+            .emotion-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .discussion-block .stat-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar .nav-links button {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+            .faction-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .char-card {
+                padding: 10px 12px;
+            }
+            .char-card .name {
+                font-size: 14px;
+            }
+            .emotion-grid {
+                grid-template-columns: 1fr;
+            }
+            .discussion-block .stat-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121016;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3a3440;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5a4a5a;
+        }
+
+        .text-gold {
+            color: #b8952e;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mt-4 {
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar">
+        <div class="brand">🃏 <span>诡秘</span>档案</div>
+        <div class="nav-links">
+            <button class="active" data-page="home">🏠 首页</button>
+            <button data-page="characters">👤 角色</button>
+            <button data-page="events">📖 事件</button>
+            <button data-page="timeline">⏳ 时间线</button>
+            <button data-page="analysis">📈 分析</button>
+            <button data-page="discussion">💬 讨论</button>
+        </div>
+    </nav>
+
+    <!-- ===== 主容器 ===== -->
+    <div class="container">
+
+        <!-- ========================== 首页 ========================== -->
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1>🃏 <span>诡秘之主</span> · 档案总览</h1>
+                <p>收录塔罗会、值夜者、白银城、红手套、极光会等所有重要角色，以及网络热议的非凡事件与完整剧情时间线。</p>
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="quick-links">
+                    <div class="ql" data-page="characters">👤 浏览角色</div>
+                    <div class="ql" data-page="events">📖 查看事件</div>
+                    <div class="ql" data-page="timeline">⏳ 时间线</div>
+                    <div class="ql" data-page="analysis">📈 分析</div>
+                    <div class="ql" data-page="discussion">💬 讨论</div>
+                </div>
+            </div>
+
+            <!-- 作品信息 & 作者 -->
+            <div class="book-info-grid">
+                <div class="book-card">
+                    <h3>📖 作品信息</h3>
+                    <div class="label">作品名称</div>
+                    <div class="value"><strong>《诡秘之主》</strong>（外文名：<em>Lord of the Mysteries</em>）</div>
+                    <div class="label">作品题材</div>
+                    <div class="value">玄幻 · 异世大陆</div>
+                    <div class="label">作品标签</div>
+                    <div class="tag-group">
+                        <span class="tag gold">穿越</span>
+                        <span class="tag blue">克苏鲁</span>
+                        <span class="tag purple">巫师流</span>
+                        <span class="tag green">蒸汽朋克</span>
+                    </div>
+                    <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px 30px; font-size:13px; color:#7a7066;">
+                        <span>📅 连载：2018.4 – 2020.5</span>
+                        <span>📄 字数：447万字</span>
+                        <span>📖 章节：1419章</span>
+                        <span>🎙️ 有声版：8082Audio</span>
+                    </div>
+                    <div class="label" style="margin-top:10px;">作品简介</div>
+                    <div class="value" style="font-size:14px; line-height:1.8; color:#b5aaa0;">
+                        “蒸汽与机械的浪潮中，谁能触及非凡？历史和黑暗的迷雾里，又是谁在耳语？我从诡秘中醒来，睁眼看见这个世界：枪械，大炮，巨舰，飞空艇，差分机；魔药，占卜，诅咒，倒吊人，封印物……光明依旧照耀，神秘从未远离，这是一段'愚者'的传说。”
+                    </div>
+                    <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px; color:#7a7066; border-top:1px solid #2a2430; padding-top:10px;">
+                        <span>🏆 起点App端内 <strong style="color:#b8952e;">五十万收藏</strong></span>
+                        <span>📊 出圈指数 <strong style="color:#b8952e;">Lv6</strong></span>
+                        <span>📈 男生月票榜 <strong style="color:#b8952e;">No.12</strong></span>
+                        <span>🎫 月票 <strong style="color:#b8952e;">3万</strong></span>
+                    </div>
+                    <div style="margin-top:6px; font-size:12px; color:#6a6056; background:#1f1b22; padding:6px 12px; border-radius:8px; border-left:3px solid #b8952e;">
+                        📺 动画特别篇已在腾讯视频播出
+                    </div>
+                </div>
+                <div class="book-card">
+                    <h3>✍️ 作者介绍</h3>
+                    <div class="label">笔名</div>
+                    <div class="value"><strong>爱潜水的乌贼</strong></div>
+                    <div class="label">本名</div>
+                    <div class="value">袁野</div>
+                    <div class="label">头衔</div>
+                    <div class="value" style="font-size:14px; color:#b5aaa0;">
+                        阅文集团白金作家 · 四川省作家协会副主席（第八届）<br />
+                        四川省网络作家协会主席（第二届） · 中国作家协会第十届全国委员会委员<br />
+                        橙瓜见证·网络文学20年十大奇幻作家
+                    </div>
+                    <div class="label">教育背景</div>
+                    <div class="value">2007年毕业于四川大学计算机学院</div>
+                    <div class="label">代表作品</div>
+                    <div class="value" style="font-size:13px; color:#b5aaa0;">
+                        《灭运图录》《奥术神座》《一世之尊》《武道宗师》《长夜余火》《诡秘之主》
+                    </div>
+                    <div class="label">荣誉</div>
+                    <div class="value" style="font-size:13px; color:#b5aaa0;">
+                        茅盾文学新人奖·网络文学新人奖 · 橙瓜网络文学奖百强大神
+                    </div>
+                    <div style="margin-top:12px; border-top:1px solid #2a2430; padding-top:10px;">
+                        <div style="font-size:13px; color:#7a7066; margin-bottom:4px;">🎂 本月生日</div>
+                        <div id="birthdayContainer" style="display:flex; flex-wrap:wrap; gap:8px 20px;"></div>
+                    </div>
+                    <div style="margin-top:8px; font-size:12px; color:#6a6056; background:#1f1b22; padding:6px 12px; border-radius:8px;">
+                        🐑 卷毛狒狒研究会 · 运营团队 17人 · 讨论帖 26万
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户画像 & 数据图表 -->
+            <div style="margin: 8px 0 4px;">
+                <h3 style="color:#d4c5a0; font-size:18px; display:flex; align-items:center; gap:10px;">
+                    📊 用户画像与核心数据
+                    <span style="font-size:13px; font-weight:400; color:#7a7066;">基于公开资料整理</span>
+                </h3>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-box">
+                    <h4>👤 读者性别分布</h4>
+                    <div class="pie-sample">
+                        <span class="item"><span class="dot" style="background:#b8952e;"></span> 男性 53%</span>
+                        <span class="item"><span class="dot" style="background:#c8a0c0;"></span> 女性 47%</span>
+                    </div>
+                    <div class="bar-group">
+                        <div class="bar-row">
+                            <span class="label">男性</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:53%; background:#b8952e;">53%</div></div>
+                            <span class="pct">53%</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="label">女性</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:47%; background:#c8a0c0;">47%</div></div>
+                            <span class="pct">47%</span>
+                        </div>
+                    </div>
+                    <div class="source-note">📌 打破男频女读者比例记录（47%），起点女性友好向作品代表</div>
+                </div>
+                <div class="chart-box">
+                    <h4>📅 读者年龄分布</h4>
+                    <div class="bar-group">
+                        <div class="bar-row">
+                            <span class="label">18-24岁</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:45%; background:#5a8ab0;">45%</div></div>
+                            <span class="pct">45%</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="label">25-30岁</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:30%; background:#6a9ac0;">30%</div></div>
+                            <span class="pct">30%</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="label">31-40岁</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:15%; background:#7aaad0;">15%</div></div>
+                            <span class="pct">15%</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="label">40岁以上</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:10%; background:#8abae0;">10%</div></div>
+                            <span class="pct">10%</span>
+                        </div>
+                    </div>
+                    <div class="source-note">📌 突破了读者年龄、性别、文化程度及欣赏趣味的界限</div>
+                </div>
+                <div class="chart-box">
+                    <h4>📈 核心数据指标</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; font-size:13px; color:#b5aaa0; margin-top:4px;">
+                        <div><span style="color:#7a7066;">全球粉丝</span><br /><strong style="color:#d4c5a0; font-size:18px;">1500万+</strong></div>
+                        <div><span style="color:#7a7066;">起点App收藏</span><br /><strong style="color:#d4c5a0; font-size:18px;">50万+</strong></div>
+                        <div><span style="color:#7a7066;">总推荐票</span><br /><strong style="color:#d4c5a0; font-size:18px;">3425万+</strong></div>
+                        <div><span style="color:#7a7066;">本章说字数</span><br /><strong style="color:#d4c5a0; font-size:18px;">1.02亿</strong></div>
+                        <div><span style="color:#7a7066;">均订</span><br /><strong style="color:#d4c5a0; font-size:18px;">30万+</strong></div>
+                        <div><span style="color:#7a7066;">盟主数</span><br /><strong style="color:#d4c5a0; font-size:18px;">2000+</strong></div>
+                    </div>
+                    <div style="margin-top:10px; font-size:12px; color:#6a6056; border-top:1px solid #2a2430; padding-top:8px;">
+                        <span>🏆 起点首部均订破30万的作品</span><br />
+                        <span>🌍 出版中、英、俄、泰、日等14种语言</span><br />
+                        <span>📚 2024年入藏大英图书馆</span>
+                    </div>
+                    <div class="source-note">📌 数据来源：百度百科 · 澎湃新闻 · 搜狐</div>
+                </div>
+                <div class="chart-box">
+                    <h4>🏛️ 受众结构金字塔</h4>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 0;">
+                        <div style="background:#b8952e; color:#0d0b0e; padding:6px 20px; border-radius:6px; font-weight:700; font-size:13px; width:70%; text-align:center;">🔺 核心读者</div>
+                        <div style="font-size:11px; color:#7a7066; text-align:center; width:70%;">22条神之途径 · 严苛考据</div>
+                        <div style="background:#c8a060; color:#0d0b0e; padding:6px 20px; border-radius:6px; font-weight:600; font-size:13px; width:85%; text-align:center;">🎨 同人创作者 · 谷子经济</div>
+                        <div style="font-size:11px; color:#7a7066; text-align:center; width:85%;">二创 · 周边 · 长尾热度</div>
+                        <div style="background:#d4c5a0; color:#0d0b0e; padding:6px 20px; border-radius:6px; font-weight:600; font-size:13px; width:100%; text-align:center;">🌊 泛娱乐受众</div>
+                        <div style="font-size:11px; color:#7a7066; text-align:center; width:100%;">动画 · 有声书 · 游戏 · 线下活动</div>
+                    </div>
+                    <div class="source-note">📌 从核心读者到泛娱乐受众的金字塔形稳定受众结构</div>
+                    <div style="font-size:11px; color:#6a6056; text-align:center; margin-top:4px;">📱 微博话题 11.8亿阅读 · 抖音 41.3亿播放</div>
+                </div>
+            </div>
+
+            <!-- 数据来源 & 版本 -->
+            <div class="sources-section">
+                <h3>📚 数据来源</h3>
+                <ul>
+                    <li><a href="https://baike.baidu.com/item/%E8%AF%A1%E7%A7%98%E4%B9%8B%E4%B8%BB/22466085" target="_blank">百度百科 · 诡秘之主</a> <span class="note">— 作品基本信息、主要角色介绍</span></li>
+                    <li><a href="https://baike.baidu.com/item/%E7%99%BD%E9%93%B6%E5%9F%8E/62024772" target="_blank">百度百科 · 白银城</a> <span class="note">— 白银城历史沿革、六人议事团</span></li>
+                    <li><a href="https://baike.baidu.com/item/%E7%BA%A2%E6%89%8B%E5%A5%97/12915355" target="_blank">百度百科 · 红手套</a> <span class="note">— 红手套小队成员、组织结构</span></li>
+                    <li><a href="https://baike.baidu.com/item/%E6%9E%81%E5%85%89%E4%BC%9A/63218122" target="_blank">百度百科 · 极光会</a> <span class="note">— 极光会组织介绍、五位圣者</span></li>
+                    <li><a href="https://baike.baidu.com/item/%E9%82%93%E6%81%A9%C2%B7%E5%8F%B2%E5%AF%86%E6%96%AF/24324296" target="_blank">百度百科 · 邓恩·史密斯</a> <span class="note">— 邓恩队长角色信息、遗言</span></li>
+                    <li><a href="https://lordofthemysteries.fandom.com/zh/wiki/%E6%97%B6%E9%97%B4%E7%BA%BF" target="_blank">诡秘之主 Wiki · 时间线</a> <span class="note">— 主线剧情详细梳理</span></li>
+                    <li><a href="https://zh.moegirl.org.cn/%E7%A7%91%E6%9E%97%C2%B7%E4%BC%8A%E5%88%A9%E4%BA%9A%E7%89%B9" target="_blank">萌娘百科 · 科林·伊利亚特</a> <span class="note">— 白银城首席角色设定</span></li>
+                    <li><a href="https://www.thepaper.cn/newsDetail_forward_29435250" target="_blank">澎湃新闻 · 《诡秘之主》的2024</a> <span class="note">— 全球粉丝量、破圈数据、国际化分析</span></li>
+                    <li><a href="https://m.sohu.com/a/819600898_121698175" target="_blank">搜狐 · 起点出圈指数</a> <span class="note">— 出圈指数、收藏/推荐/粉丝数据</span></li>
+                    <li><a href="http://www.chinawriter.com.cn/n1/2020/0722/c404027-31793217.html" target="_blank">中国作家网 · 网文发展趋势</a> <span class="note">— 读者年龄性别文化程度突破分析</span></li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>📋 版本记录</h3>
+                <div class="version-item"><span class="ver">v1.0</span><span class="desc"><strong>初始版本：</strong> 基础人物关系网络</span></div>
+                <div class="version-item"><span class="ver">v2.0</span><span class="desc"><strong>事件与马甲扩充：</strong> 新增五大事件，补全克莱恩全部马甲</span></div>
+                <div class="version-item"><span class="ver">v3.0</span><span class="desc"><strong>势力聚类与双页结构：</strong> 拆分角色与事件，按势力聚合</span></div>
+                <div class="version-item"><span class="ver">v4.0</span><span class="desc"><strong>时间线页面与角色补全：</strong> 新增⏳时间线，附原文金句</span></div>
+                <div class="version-item"><span class="ver">v4.1</span><span class="desc"><strong>数据链接规范化 &amp; 版本记录</strong></span></div>
+                <div class="version-item"><span class="ver">v5.0</span><span class="desc"><strong>🏆 作品信息 + 用户画像</strong></span></div>
+                <div class="version-item"><span class="ver">v5.1</span><span class="desc"><strong>📱 起点截图校准</strong></span></div>
+                <div class="version-item"><span class="ver">v5.2</span><span class="desc"><strong>🎂 角色详情与动态生日</strong></span></div>
+                <div class="version-item"><span class="ver">v5.3</span><span class="desc"><strong>📅 生日全面校准</strong></span></div>
+                <div class="version-item"><span class="ver">v5.4</span><span class="desc"><strong>📈 人物成长与情感分析</strong></span></div>
+                <div class="version-item"><span class="ver">v6.0</span><span class="desc"><strong>💬 作品讨论：</strong> 新增“作品讨论”页面，包含克苏鲁神话本土化与文化转译、核心主题论证（现代人在疯狂世界中如何保持自我）、粉丝社群与“第二文本”生产三大板块，所有观点均标注数据来源。</span></div>
+            </div>
+        </div>
+
+        <!-- ========================== 角色页 ========================== -->
+        <div id="page-characters" class="page">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-size:26px; color:#d4c5a0; display:flex; align-items:center; gap:12px;">
+                    👤 角色势力图谱
+                    <span style="font-size:14px; font-weight:400; color:#7a7066;">点击角色卡片查看详情</span>
+                </h2>
+            </div>
+            <div id="factionContainer"></div>
+        </div>
+
+        <!-- ========================== 事件页 ========================== -->
+        <div id="page-events" class="page">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-size:26px; color:#d4c5a0; display:flex; align-items:center; gap:12px;">
+                    📖 非凡事件录
+                    <span style="font-size:14px; font-weight:400; color:#7a7066;">按网络热度排序 · 🔥 越多越热门</span>
+                </h2>
+            </div>
+            <div id="eventContainer"></div>
+        </div>
+
+        <!-- ========================== 时间线页 ========================== -->
+        <div id="page-timeline" class="page">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-size:26px; color:#d4c5a0; display:flex; align-items:center; gap:12px;">
+                    ⏳ 剧情时间线
+                    <span style="font-size:14px; font-weight:400; color:#7a7066;">按叙事顺序 · 附原文金句</span>
+                </h2>
+            </div>
+            <div id="timelineContainer"></div>
+        </div>
+
+        <!-- ========================== 人物分析页 ========================== -->
+        <div id="page-analysis" class="page">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-size:28px; color:#d4c5a0; display:flex; align-items:center; gap:12px;">
+                    📈 克莱恩·莫雷蒂 · 人物成长与情感分析
+                    <span style="font-size:14px; font-weight:400; color:#7a7066;">基于全书1419章及公开资料</span>
+                </h2>
+            </div>
+            <div class="analysis-section">
+                <p style="font-size:15px; color:#b5aaa0; line-height:1.8;">
+                    <span class="highlight">克莱恩·莫雷蒂</span>（本名周明瑞）的成长轨迹是《诡秘之主》最核心的叙事线索。
+                    作者爱潜水的乌贼在创作这个角色时，首先确定了“韧性、乐观、善良”的性格底色，
+                    然后通过“扮演法”让他穿上不同人格的外衣，展现内心的矛盾与成长。
+                </p>
+            </div>
+            <div class="analysis-section">
+                <h2>一、成长轨迹：从“普通人”到“诡秘之主”</h2>
+                <div class="table-wrap">
+                    <table class="analysis-table">
+                        <thead><tr><th>阶段</th><th>章节范围</th><th>序列</th><th>核心马甲</th><th>情感基调</th><th>关键事件</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>第一阶段</strong><br>觉醒与启蒙</td><td>第1-100章</td><td>序列9“占卜家”→序列8“魔术师”</td><td>克莱恩·莫雷蒂</td><td>谨慎·迷茫·温暖</td><td>穿越廷根、加入值夜者、邓恩牺牲</td></tr>
+                            <tr><td><strong>第二阶段</strong><br>复仇与成长</td><td>第100-200章</td><td>序列7“无面人”→序列6“秘偶大师”</td><td>夏洛克·莫里亚蒂</td><td>压抑·愤怒·孤独</td><td>追查因斯·赞格威尔、贝克兰德大雾霾</td></tr>
+                            <tr><td><strong>第三阶段</strong><br>冒险与扮演</td><td>第200-350章</td><td>序列5“旅行家”→序列4“诡法师”</td><td>格尔曼·斯帕罗（世界）</td><td>疯狂·自由·碎片化</td><td>出海、五海冒险、塔罗会壮大</td></tr>
+                            <tr><td><strong>第四阶段</strong><br>布局与博弈</td><td>第350-500章</td><td>序列4“诡法师”→序列3“古代学者”</td><td>道恩·唐泰斯</td><td>冷静·谋划·沉重</td><td>重返贝克兰德、与亚当和阿蒙博弈</td></tr>
+                            <tr><td><strong>第五阶段</strong><br>神性与人性的抗争</td><td>第500-900章</td><td>序列3“古代学者”→序列2“奇迹师”</td><td>梅林·赫尔墨斯</td><td>混乱·挣扎·坚守</td><td>故乡覆灭真相、与阿蒙宿命对决</td></tr>
+                            <tr><td><strong>第六阶段</strong><br>终局与沉眠</td><td>第900-1419章</td><td>序列1“诡秘侍者”→序列0“愚者”</td><td>愚者</td><td>宏大·牺牲·希望</td><td>晋升旧日、源堡之战、沉眠</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="background:#1f1b22; padding:14px 18px; border-radius:12px; border-left:3px solid #b8952e; margin-top:12px;">
+                    <p style="font-size:14px; color:#b5aaa0; line-height:1.8; margin:0;">
+                        <strong style="color:#d4c5a0;">深度解析：</strong>
+                        第一阶段，克莱恩穿越之初是一个“长相普通、能力普通”的普通男生，享受平淡安稳的生活。
+                        邓恩队长的牺牲是他人生的第一次重大转折——“非凡者是守护者，也是一群对抗疯狂的可怜虫”。
+                        第二阶段，他带着这份善良独行在危险的“异世”中，在贝克兰德大雾霾中以凡人之躯挑战神明。
+                        第三阶段，化身格尔曼·斯帕罗出海，扮演一个疯狂的冒险家，爽点笑点很多，但整体散碎。
+                        第四阶段，化身道恩·唐泰斯重返贝克兰德，进入“刀尖上跳舞”的状态。
+                        第五阶段，得知故乡覆灭后“不可避免的混乱了”，但在认清残酷现实后仍选择热爱生活——
+                        “在变强的过程中能保持普通人的朴实本心，这是一个有良知人类的最高坚守。”
+                        第六阶段，概念性的序列晋升与神性抗争交织，最终以沉眠保护所珍视的一切。
+                    </p>
+                </div>
+            </div>
+            <div class="analysis-section">
+                <h2>二、各卷情感基调对比</h2>
+                <p style="color:#b5aaa0; line-height:1.8;">
+                    《诡秘之主》共八卷，每卷由一种魔药名称命名并附一句卷首语。
+                    乌贼的创作方法是：<span class="highlight">先定好一卷的主题，想象出卷末的意象，再逐渐倒推出过程。</span>
+                </p>
+                <div class="table-wrap">
+                    <table class="analysis-table">
+                        <thead><tr><th>卷数</th><th>卷名</th><th>情感基调</th><th>核心意象</th><th>读者情感反馈</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>第一卷</strong></td><td>小丑</td><td>压抑·无力·温情</td><td>“所有人会死，包括我”</td><td>全卷最佳，教科书式布局</td></tr>
+                            <tr><td><strong>第二卷</strong></td><td>无面人</td><td>平淡·暗流·爆发</td><td>大雾霾灾难</td><td>略平淡，结尾震撼</td></tr>
+                            <tr><td><strong>第三卷</strong></td><td>旅行家</td><td>碎片化·自由·漂泊</td><td>海上冒险</td><td>爽点笑点多，整体较散</td></tr>
+                            <tr><td><strong>第四卷</strong></td><td>不死者</td><td>压抑·复仇·激昂</td><td>因斯·赞格威尔之死</td><td>承上启下，复仇情节激昂动人</td></tr>
+                            <tr><td><strong>第五卷</strong></td><td>红祭司</td><td>紧张·刀尖跳舞·博弈</td><td>阿蒙来袭</td><td>紧张感极致</td></tr>
+                            <tr><td><strong>第六卷</strong></td><td>逐光者</td><td>混乱·挣扎·神性抗争</td><td>巨人王庭</td><td>前半精彩，后期战斗描写混乱</td></tr>
+                            <tr><td><strong>第七卷</strong></td><td>倒吊人</td><td>宏大·复杂·信息密集</td><td>序列晋升</td><td>合理性高但观感复杂</td></tr>
+                            <tr><td><strong>第八卷</strong></td><td>愚者</td><td>牺牲·希望·终局</td><td>源堡之战/沉眠</td><td>信息密度大，阅读体验受影响</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="analysis-section">
+                <h2>三、“克苏鲁式恐惧”的量化分析</h2>
+                <p style="color:#b5aaa0; line-height:1.8;">
+                    《诡秘之主》虽然整体风格是诡异和克苏鲁风格，但其中也埋藏了大量幽默与温情。
+                    以下是对全本四种核心情绪的分布分析：
+                </p>
+                <div class="emotion-grid">
+                    <div class="emotion-card" style="border-left:4px solid #b06a6a;">
+                        <div class="emotion-name" style="color:#b06a6a;">恐惧/未知</div>
+                        <div class="emotion-pct">35%</div>
+                        <div class="emotion-desc">克苏鲁核心——不可名状的恐惧、凝视深渊的压迫感。“这个世界的基调就是绝望，而规则则是疯狂。”</div>
+                    </div>
+                    <div class="emotion-card" style="border-left:4px solid #b8952e;">
+                        <div class="emotion-name" style="color:#b8952e;">希望/温情</div>
+                        <div class="emotion-pct">30%</div>
+                        <div class="emotion-desc">人性的锚点——守护、羁绊、对善良的坚守。邓恩的“我们拯救了廷根”、克莱恩与戴莉的最后一舞。</div>
+                    </div>
+                    <div class="emotion-card" style="border-left:4px solid #5a9a7a;">
+                        <div class="emotion-name" style="color:#5a9a7a;">幽默/轻松</div>
+                        <div class="emotion-pct">20%</div>
+                        <div class="emotion-desc">黑暗中的笑点——阿蒙的“厉害，厉害”、小蛇吃冰淇淋、穷逼之主、二五仔同好会、卷毛狒狒。</div>
+                    </div>
+                    <div class="emotion-card" style="border-left:4px solid #8a6ab0;">
+                        <div class="emotion-name" style="color:#8a6ab0;">疯狂/失控</div>
+                        <div class="emotion-pct">15%</div>
+                        <div class="emotion-desc">非凡者的代价——老尼尔为爱人失控、戴莉与灵界生物缔结契约而牺牲、克莱恩与天尊的对抗。</div>
+                    </div>
+                </div>
+                <div style="background:#1f1b22; padding:14px 18px; border-radius:12px; margin-top:6px;">
+                    <p style="font-size:14px; color:#b5aaa0; line-height:1.8; margin:0;">
+                        <strong style="color:#d4c5a0;">恐惧（35%）：</strong> 克苏鲁的核心是“未知的恐惧”，是“主不在乎”，是“无法理解”。<br>
+                        <strong style="color:#d4c5a0;">希望/温情（30%）：</strong> 尽管世界充满疯狂，克莱恩始终坚守普通人的本心。<br>
+                        <strong style="color:#d4c5a0;">幽默/轻松（20%）：</strong> 乌贼在黑暗中埋藏了大量笑点，让读者在压抑的叙事中获得喘息。<br>
+                        <strong style="color:#d4c5a0;">疯狂/失控（15%）：</strong> 非凡之路的本质是与疯狂的对抗。“非凡者是守护者，也是一群对抗疯狂的可怜虫。”
+                    </p>
+                </div>
+                <div style="margin-top:12px; font-size:13px; color:#6a6056; background:#1f1b22; padding:8px 14px; border-radius:8px;">
+                    📌 以上情绪分布比例为定性分析估算，基于读者反馈、书评分析和作者创作谈的综合判断，并非基于NLP情感分析的精确数值。
+                </div>
+            </div>
+            <div class="analysis-section">
+                <h2 style="border-left-color:#b8952e;">四、数据来源</h2>
+                <ul class="source-list">
+                    <li><strong>百度百科 · 克莱恩·莫雷蒂</strong> — 角色基本信息、序列晋升路径、主要经历</li>
+                    <li><strong>豆瓣 · 《诡秘之主》读书笔记</strong> — 克莱恩人物塑造分析、心理变化轨迹</li>
+                    <li><strong>知乎 · 第五卷专栏</strong> — 克莱恩晋升半神、与阿蒙交锋分析</li>
+                    <li><strong>文汇报 · 乌贼访谈</strong> — 作者创作理念、角色塑造初衷</li>
+                    <li><strong>百家号 · 各卷卷名盘点</strong> — 各卷卷名含义与情感解读</li>
+                    <li><strong>豆瓣 · 克苏鲁内核分析</strong> — 克苏鲁式恐惧的定义与表现</li>
+                    <li><strong>贴吧 · 搞笑场景盘点</strong> — 幽默情节梳理</li>
+                    <li><strong>NGA · 克莱恩孤独讨论</strong> — 克莱恩在源堡战中的选择与心理</li>
+                    <li><strong>萌娘百科 · 克莱恩条目</strong> — 角色基本信息</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========================== 作品讨论页 (v6.0) ========================== -->
+        <div id="page-discussion" class="page">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-size:28px; color:#d4c5a0; display:flex; align-items:center; gap:12px;">
+                    💬 作品讨论 · 文化转译与主题阐释
+                    <span style="font-size:14px; font-weight:400; color:#7a7066;">基于学术论文 · 作者访谈 · 读者社群数据</span>
+                </h2>
+            </div>
+
+            <!-- 板块一：克苏鲁神话的本土化 -->
+            <div class="discussion-block">
+                <h2 style="border-left-color:#7a5aaa;">一、“克苏鲁神话”的本土化与文化转译</h2>
+                <p>
+                    山东师范大学硕士研究生许耀义在《媒介批评》（CSSCI来源集刊）发表的论文中指出：
+                    <span class="highlight">“近年来有一定规模的网文作品在叙事中尝试运用克苏鲁神话元素，由爱潜水的乌贼创作的《诡秘之主》便是其中的突出代表。”</span>
+                </p>
+                <div class="quote-box" style="border-left-color:#7a5aaa;">
+                    <p><strong style="color:#d4c5a0;">三重变异：</strong><br>
+                    许耀义论文进一步指出，克苏鲁元素在本土接受过程中发生了
+                    <span class="highlight">“内容重组”“光明转向”“幻想崇高”</span>三重变异。
+                    原初克苏鲁神话以“反宗教的恐怖”和“反科学的奇幻”为特质，而在《诡秘之主》的书写中，
+                    这些元素被重新编码——绝望被转化为勇气的颂歌，不可名状的恐惧被赋予了人性的温度。</p>
+                </div>
+                <p>
+                    中国作家网专题文章从场景、人物、情节三方面分析了《诡秘之主》是如何
+                    <span class="highlight">吸纳并规划“克苏鲁”“蒸汽朋克”等西方文化元素，以“异域风情”的方式呈现给中国读者</span>的。
+                    文章指出，当代玄幻小说呈现出<span class="highlight">“中学为体，西学为用”</span>的共同主题。
+                </p>
+                <p>
+                    有论者追踪克苏鲁元素在东方土壤的变异时指出，从《诡秘之主》将修真体系与旧神污染嫁接，
+                    到《道诡异仙》用傩戏面具承载奈亚拉托提普的千面寓言，<span class="highlight">“中式克苏鲁”将宇宙恐怖转化为文化身份焦虑</span>。
+                </p>
+                <div class="source-tag">
+                    📌 数据来源：许耀义《从绝望的哀矜到勇气的颂歌——克苏鲁神话元素在当代网文书写中的变异接受》，《媒介批评》第十六辑（CSSCI来源集刊）；
+                    中国作家网《从〈诡秘之主〉看中国玄幻小说中的“民族性”与“世界性”因素》
+                </div>
+            </div>
+
+            <!-- 板块二：核心主题 -->
+            <div class="discussion-block">
+                <h2 style="border-left-color:#b8952e;">二、核心主题：现代人在疯狂世界中如何保持自我</h2>
+                <p>
+                    《诡秘之主》展现出的是一个<span class="highlight">混乱疯狂的世界</span>。
+                    精灵、巨龙等传统意义上的奇幻生物在创世初处于疯狂状态，恢复理性纯属偶然，
+                    人类文明的秩序则是反“自然”的产物，是人为的“规定”。
+                </p>
+                <div class="quote-box">
+                    <p><strong style="color:#d4c5a0;">数字化时代平凡英雄的成长镜像</strong><br>
+                    《南京师范大学文学院学报》2023年刊发的论文指出，《诡秘之主》是<span class="highlight">“玄幻外衣下的新时代成长小说”</span>。
+                    论文认为，小说在叙事语法上对成长叙事的创化之功主要体现在成长的<span class="highlight">“知-行”维度</span>上，
+                    充溢着深度的“灵性”探寻。</p>
+                </div>
+                <div class="quote-box" style="border-left-color:#b8952e;">
+                    <p><strong style="color:#d4c5a0;">现代性寓言：罗塞尔与克莱恩的双重镜像</strong><br>
+                    有论者将罗塞尔·古斯塔夫（黄涛）的命运解读为一段<span class="highlight">“线性的现代性寓言”</span>——
+                    “异乡理性进入神秘世界，点燃启蒙之火，最终在疯狂中自我焚毁”。
+                    而克莱恩则走出了不同的道路：他在保持理性的同时坚守人性，
+                    在“序列越高，神性越强，人性越弱”的法则中，
+                    以“黑暗绝望中的一缕光”完成了对现代人精神困境的回应。</p>
+                </div>
+                <div class="quote-box">
+                    <p><strong style="color:#d4c5a0;">作者自述：黑暗中的一缕光</strong><br>
+                    爱潜水的乌贼接受《四川日报》专访时亲自阐释了《诡秘之主》的核心主题：
+                    <span class="highlight">“《诡秘之主》这本书，就是一个愚者的旅程。</span>
+                    一是将西方神秘学部分知识与克苏鲁神话元素融合起来后产生的新奇有趣的世界观；
+                    <span class="highlight">二是黑暗绝望中的一缕光，这一缕光既是人性的怜悯，也是人类勇气的赞歌</span>。
+                    三是人性、神性的对抗和融合。”</p>
+                </div>
+                <div style="background:#1f1b22; padding:14px 18px; border-radius:12px; border-left:3px solid #b8952e; margin:12px 0;">
+                    <p style="font-size:14px; color:#b5aaa0; line-height:1.8; margin:0;">
+                        <strong style="color:#d4c5a0;">情感分析的量化支撑：</strong><br>
+                        恐惧与希望的比例（35%:30%）揭示了《诡秘之主》的核心张力——
+                        世界固然充满不可名状的恐怖，但人性的光辉始终与之抗衡。
+                        幽默元素（20%）证明了乌贼所说的“黑暗中的一抹光”——即使在最压抑的叙事中，作者仍然为读者保留了喘息的空间。
+                        而疯狂/失控（15%）作为非凡之路的代价，时刻提醒着读者：
+                        <span class="highlight">“非凡者是守护者，也是一群对抗疯狂的可怜虫。”</span>
+                    </p>
+                </div>
+                <div class="source-tag">
+                    📌 数据来源：《名作欣赏》2022年26期《现实照进幻想——评爱潜水的乌贼网络小说〈诡秘之主〉》；
+                    南京师范大学文学院学报2023年01期；人民网·爱潜水的乌贼专访；
+                    四川日报《永不满足，永在挑战》；中国作家网·网络文学“破壁者”访谈
+                </div>
+            </div>
+
+            <!-- 板块三：粉丝社群与第二文本 -->
+            <div class="discussion-block">
+                <h2 style="border-left-color:#6a8ab0;">三、粉丝社群与“第二文本”生产</h2>
+                <p>
+                    《诡秘之主》的成功不仅是文本的成功，更是<span class="highlight">粉丝社群生态</span>的成功。
+                    起点中文网“本章说”功能的兴起，使读者从被动的消费者转变为主动的参与者，
+                    形成了独特的“第二文本”生产机制。
+                </p>
+                <div class="stat-row">
+                    <div class="stat-card-mini" style="border-left-color:#b8952e;">
+                        <div class="num">1.02亿</div>
+                        <div class="label">本章说字数</div>
+                        <div class="desc">起点读书评论数最高的男频作品</div>
+                    </div>
+                    <div class="stat-card-mini" style="border-left-color:#6a8ab0;">
+                        <div class="num">近700万</div>
+                        <div class="label">起点站内粉丝</div>
+                        <div class="desc">盟主数超过550位</div>
+                    </div>
+                    <div class="stat-card-mini" style="border-left-color:#5a9a7a;">
+                        <div class="num">2583万</div>
+                        <div class="label">推荐票</div>
+                        <div class="desc">超200万条评论</div>
+                    </div>
+                    <div class="stat-card-mini" style="border-left-color:#7a5aaa;">
+                        <div class="num">361条</div>
+                        <div class="label">Fandom Wiki词条</div>
+                        <div class="desc">英语世界粉丝自发整理</div>
+                    </div>
+                </div>
+                <div class="quote-box" style="border-left-color:#6a8ab0;">
+                    <p><strong style="color:#d4c5a0;">社交共读、粉丝社群、粉丝共创</strong><br>
+                    阅文集团前CEO吴文辉曾指出，<span class="highlight">“社交共读、粉丝社群、粉丝共创”</span>
+                    是粉丝文化时代内容平台最突出的三个特征。
+                    《诡秘之主》的“本章说”正是这三者的集中体现——
+                    每当小说更新延迟，就有读者用主角克莱恩的咒语呼喊道：
+                    <span class="highlight">“执掌好运的黄黑之王……求求您多点更新吧。”</span></p>
+                </div>
+                <div class="quote-box">
+                    <p><strong style="color:#d4c5a0;">“第二文本”的学术意义</strong><br>
+                    粉丝的“本章说”评论、同人创作、设定考据构成了一个庞大的<span class="highlight">“第二文本”系统</span>。
+                    这一系统不仅是原文本的延伸，更是对原文本的重新阐释与意义再生产。
+                    正如有观察者所言，用户与平台之间的关系不再是单纯的内容输出流量置换，
+                    而是一种<span class="highlight">“社区化、生态化的交互”</span>。
+                    在这个意义上，《诡秘之主》的粉丝社群本身就是一个值得研究的文化现象——
+                    它展示了数字时代文学接受从“被动阅读”到“主动共创”的范式转型。</p>
+                </div>
+                <p style="margin-top:10px;">
+                    在英语世界最大的网络小说平台武侠世界（Wuxiaworld）上，《诡秘之主》已上架并获得高度评价。
+                    有海外读者表示，喜欢《诡秘之主》的理由包括：
+                    <span class="highlight">“设定太牛了，22条序列的不同特点，神奇又有趣”</span>。
+                    乌贼在采访中也提到，海内外读者在对人类共同情感上的
+                    <span class="highlight">“感动点几乎一致，没有太大的区别”</span>。
+                </p>
+                <div class="source-tag">
+                    📌 数据来源：起点中文网官方数据；百家号《带你看懂本章说》；
+                    界面新闻《4.55亿用户背后》；中国作家网·爱潜水的乌贼访谈；
+                    中国作家网《从〈诡秘之主〉看中国玄幻小说中的“民族性”与“世界性”因素》；
+                    四川日报《永不满足，永在挑战》
+                </div>
+            </div>
+
+            <!-- 总结 -->
+            <div class="discussion-block" style="border-top:1px solid #2a2430; padding-top:20px;">
+                <h2 style="border-left-color:#d4c5a0;">四、总结：从文本到文化现象</h2>
+                <p>
+                    《诡秘之主》的学术价值不仅在于其文本本身的复杂性，更在于它作为一个<span class="highlight">跨文化、跨媒介的文化现象</span>
+                    所引发的多重讨论。从克苏鲁神话的本土化变异，到对现代人精神困境的寓言式书写，
+                    再到粉丝社群创造的“第二文本”生态——这部作品为我们理解
+                    <span class="highlight">数字时代文学的生产、传播与接受</span>提供了绝佳的案例。
+                </p>
+                <p>
+                    正如乌贼自己所说：“《诡秘之主》这本书，就是一个愚者的旅程。”
+                    而这条旅程的意义，或许不仅属于克莱恩，也属于每一个在混乱世界中寻找自我、坚守人性的现代人。
+                </p>
+                <div class="source-tag">
+                    📌 本页面所有分析均基于公开的学术论文、作者访谈、媒体报道及读者社群数据，已逐条标注来源。
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== 模态框 ===== -->
+    <div class="modal-overlay" id="charModal">
+        <div class="modal-box">
+            <button class="close-btn" id="modalClose">✕</button>
+            <div class="modal-name" id="modalName"></div>
+            <div class="modal-alias" id="modalAlias"></div>
+            <div class="modal-section"><div class="label">🎂 生日</div><div class="value gold" id="modalBirthday"></div></div>
+            <div class="modal-section"><div class="label">📖 首次出场</div><div class="value" id="modalChapter"></div></div>
+            <div class="modal-section"><div class="label">📜 经历简介</div><div class="value" id="modalExperience"></div></div>
+            <div class="modal-section"><div class="label">🏷️ 势力</div><div class="modal-tags" id="modalFactions"></div></div>
+            <div class="modal-chapter" id="modalExtra"></div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  1. 数据定义 —— 角色（与v5.3一致，仅保留核心数据）
+        // ================================================================
+
+        const characters = [
+            { id: '克莱恩', name: '克莱恩·莫雷蒂', alias: '愚者 · 占卜家途径', factions: ['塔罗会', '愚者'], chapter: '第1章',
+                birthday: '3月4日',
+                experience: '塔罗会创立者，代号"愚者"。原名周明瑞，穿越者，从序列9"占卜家"一步步晋升至旧日"诡秘之主"。曾加入值夜者，后创立愚者教会，引领白银城脱离神弃之地。' },
+            { id: '奥黛丽', name: '奥黛丽·霍尔', alias: '正义 · 观众途径', factions: ['塔罗会', '鲁恩王国'], chapter: '第6章',
+                birthday: '6月6日',
+                experience: '霍尔伯爵之女，塔罗会"正义"。凭借过人的智慧与洞察力，加入心理炼金会，成为序列4"操纵师"。在贝克兰德大雾霾等事件中发挥关键作用。' },
+            { id: '阿尔杰', name: '阿尔杰·威尔逊', alias: '倒吊人 · 暴君途径', factions: ['塔罗会'], chapter: '第6章',
+                birthday: '3月20日',
+                experience: '原风暴教会船长，代号"倒吊人"。后脱离风暴教会，成为海神教会教皇，序列3"海王"。在塔罗会中扮演重要角色。' },
+            { id: '戴里克', name: '戴里克·伯格', alias: '太阳 · 太阳途径', factions: ['塔罗会', '白银城'], chapter: '第138章',
+                birthday: '4月19日',
+                experience: '神弃之地白银城少年，代号"太阳"。在愚者引领下晋升序列4"无暗者"，后成为愚者教会大主教，带领白银城迁出神弃之地。' },
+            { id: '佛尔思', name: '佛尔思·沃尔', alias: '魔术师 · 门途径', factions: ['塔罗会', '鲁恩王国'], chapter: '第67章',
+                birthday: '4月13日',
+                experience: '慵懒女作家，前外科医生。亚伯拉罕家族成员的学生，与休·迪尔查是好友。序列5"旅行家"。' },
+            { id: '埃姆林', name: '埃姆林·怀特', alias: '月亮 · 血族伯爵', factions: ['塔罗会'], chapter: '第249章',
+                birthday: '9月3日',
+                experience: '血族伯爵，代号"月亮"。序列4"血族公爵"。曾对愚者有所怀疑，后完全归顺塔罗会。' },
+            { id: '嘉德丽雅', name: '嘉德丽雅', alias: '隐者 · 神秘学家', factions: ['塔罗会'], chapter: '第96章', birthday: '2月3日',
+                experience: '摩斯苦修会成员，代号"隐者"，人称"星之女王"。序列4"神秘学家"。在神秘学领域造诣深厚。' },
+            { id: '休', name: '休·迪尔查', alias: '审判 · 律师途径', factions: ['塔罗会', '鲁恩王国'], chapter: '第67章',
+                birthday: '3月18日',
+                experience: '塔罗会"审判"，序列5"律师"。与佛尔思·沃尔是好友，出身鲁恩王国贵族家庭。' },
+            { id: '伦纳德', name: '伦纳德·米切尔', alias: '星星 · 黑夜途径', factions: ['塔罗会', '值夜者', '红手套'], chapter: '第3章',
+                birthday: '2月14日',
+                experience: '值夜者出身，后成为黑夜教会高级执事，代号"星星"。体内寄生着天使帕列斯·索罗亚斯德。加入红手套，序列4"守夜人"。' },
+            { id: '邓恩', name: '邓恩·史密斯', alias: '值夜者队长 · 梦魇', factions: ['值夜者'], chapter: '第3章', birthday: '8月16日',
+                experience: '廷根市值夜者小队队长，序列7"梦魇"。在邪神子嗣降临事件中牺牲，临终前说出"我们拯救了廷根"。是克莱恩的引路人。' },
+            { id: '老尼尔', name: '老尼尔', alias: '值夜者 · 窥秘人', factions: ['值夜者'], chapter: '第24章', birthday: '3月9日',
+                experience: '克莱恩的神秘学启蒙导师，序列9"窥秘人"。因尝试禁忌"生命炼成"仪式复活未婚妻而失控身亡。' },
+            { id: '戴莉', name: '戴莉·西蒙妮', alias: '值夜者 · 通灵者', factions: ['值夜者', '红手套'], chapter: '第13章',
+                birthday: '12月31日',
+                experience: '值夜者"通灵者"，后加入红手套。在狩猎因斯·赞格威尔的决战中，强行与灵界生物缔结契约而牺牲，与克莱恩变化成的邓恩跳完最后一支舞后安详离去。' },
+            { id: '罗珊', name: '罗珊', alias: '值夜者文职人员', factions: ['值夜者'], chapter: '第17章', birthday: '6月6日',
+                experience: '黑荆棘安保公司文职人员，22岁，负责前台接待、物资管理。父亲是值夜者，五年前牺牲。' },
+            { id: '布莱特', name: '布莱特', alias: '值夜者队员', factions: ['值夜者'], chapter: '第80章', birthday: '3月28日',
+                experience: '廷根市值夜者小队成员，序列8"格斗家"。在邪神子嗣事件中幸存，后转入其他小队。' },
+            { id: '科林', name: '科林·伊利亚特', alias: '白银城首席 · 猎魔者', factions: ['白银城'], chapter: '第138章',
+                birthday: '8月4日',
+                experience: '白银城六人议事团首席，序列4"猎魔者"。在巨人王庭与暗天使萨斯利尔恶灵决战中殒落，遗言："去打开那扇门吧，我想看一看外面的阳光是什么样子……"' },
+            { id: '洛薇雅', name: '洛薇雅·蒂芙尼', alias: '白银城长老 · 真实造物主代言人', factions: ['白银城'], chapter: '第138章',
+                birthday: '10月17日',
+                experience: '白银城六人议事团长老，信仰真实造物主。在巨人王庭一战中，被真实造物主污染后拼死给予萨斯利尔最后一击，消散在空中，遗言："我没有背叛白银城……"' },
+            { id: '韦特', name: '韦特·希尔蒙', alias: '白银城现任首席', factions: ['白银城'], chapter: '第300章', birthday: '7月29日',
+                experience: '科林·伊利亚特殒落后的白银城新任首席，领导白银城迁出神弃之地。' },
+            { id: '索斯特', name: '索斯特', alias: '红手套领队 · 灵巫', factions: ['红手套'], chapter: '第200章', birthday: '5月14日',
+                experience: '序列5"灵巫"，红手套小队领队之一，常驻贝克兰德圣赛缪尔教堂。' },
+            { id: '克雷斯泰', name: '克雷斯泰·塞西玛', alias: '红手套成员', factions: ['红手套'], chapter: '第200章',
+                birthday: '9月19日', experience: '红手套小队成员之一，擅长追踪与战斗。' },
+            { id: '班森', name: '班森·莫雷蒂', alias: '克莱恩的哥哥', factions: ['莫雷蒂家族'], chapter: '第1章', birthday: '5月6日',
+                experience: '在进出口公司打工，靠微薄薪水养活弟弟妹妹。性格务实稳重。' },
+            { id: '梅丽莎', name: '梅丽莎·莫雷蒂', alias: '克莱恩的妹妹', factions: ['莫雷蒂家族'], chapter: '第1章',
+                birthday: '11月23日', experience: '克莱恩的妹妹，与哥哥班森和克莱恩同住。' },
+            { id: '阿蒙', name: '阿蒙', alias: '渎神者 · 错误途径', factions: ['高位序列'], chapter: '第180章', birthday: '1月3日',
+                experience: '远古太阳神次子，亚当的弟弟。出生即为错误途径天使之王。与克莱恩展开宿命对决，是全书最危险的敌人之一。' },
+            { id: '亚当', name: '亚当', alias: '空想天使 · 观众途径', factions: ['高位序列'], chapter: '第202章', birthday: '???',
+                experience: '远古太阳神长子，"空想天使"。黄昏隐士会首领，在血月事件中与阿蒙博弈。' },
+            { id: '远古太阳神', name: '远古太阳神', alias: '造物主 · 上帝', factions: ['高位序列'], chapter: '第143章',
+                birthday: '???',
+                experience: '阿蒙与亚当之父，第三纪的造物主。被分食而陨落，其身体化为封印物与非凡特性。' },
+            { id: '黑夜女神', name: '黑夜女神', alias: '黑夜途径 · 序列0', factions: ['高位序列', '正神教会'], chapter: '第60章',
+                birthday: '12月22日', experience: '正神之一，黑夜教会信仰对象。在诡秘之主崛起过程中扮演重要角色。' },
+            { id: '风暴之主', name: '风暴之主', alias: '暴君途径 · 序列0', factions: ['高位序列', '正神教会'], chapter: '第8章',
+                birthday: '???', experience: '正神之一，风暴教会信仰对象。' },
+            { id: '永恒烈阳', name: '永恒烈阳', alias: '太阳途径 · 序列0', factions: ['高位序列', '正神教会'], chapter: '第8章',
+                birthday: '???', experience: '正神之一，永恒烈阳教会信仰对象。为白银城提供庇护。' },
+            { id: '罗塞尔', name: '罗塞尔·古斯塔夫', alias: '黑皇帝 · 穿越者', factions: ['其他重要人物', '鲁恩王国'], chapter: '第4章',
+                birthday: '10月11日',
+                experience: '因蒂斯皇帝，穿越者前辈。留下大量日记，成为克莱恩的重要信息来源。谋划"黑皇帝"序列。' },
+            { id: '阿兹克', name: '阿兹克·艾格斯', alias: '死亡执政官 · 死神途径', factions: ['其他重要人物'], chapter: '第24章',
+                birthday: '11月4日',
+                experience: '"冥皇"萨林格尔之子，第四纪拜朗帝国"死亡执政官"。克莱恩的老师与挚友。' },
+            { id: '帕列斯', name: '帕列斯·索罗亚斯德', alias: '时之天使 · 偷盗者', factions: ['其他重要人物'], chapter: '第54章',
+                birthday: '???',
+                experience: '寄生在伦纳德体内的天使，原序列1，现序列2。曾是第四纪的古老存在。' },
+            { id: '贝尔纳黛', name: '贝尔纳黛·古斯塔夫', alias: '罗塞尔之女', factions: ['其他重要人物', '鲁恩王国'], chapter: '第244章',
+                birthday: '5月19日', experience: '罗塞尔·古斯塔夫的长女，对父亲的失踪与死亡深感悲痛。' },
+            { id: '苏茜', name: '苏茜', alias: '奥黛丽的狗', factions: ['其他重要人物'], chapter: '第67章', birthday: '1月25日',
+                experience: '奥黛丽·霍尔的金毛大狗，序列五"梦境行者"。' },
+            { id: '达尼兹', name: '达尼兹·迪布瓦', alias: '愚者神使', factions: ['其他重要人物'], chapter: '第358章', birthday: '1月7日',
+                experience: '克莱恩的眷者，后成为愚者教会神使。' },
+            { id: '威尔', name: '威尔·昂赛汀', alias: '水银天使 · 命运途径', factions: ['其他重要人物'], chapter: '第394章',
+                birthday: '6月26日', experience: '命运之蛇，后加入愚者教会。' },
+            { id: '因斯', name: '因斯·赞格威尔', alias: '叛逃值夜者 · 序列4', factions: ['其他重要人物'], chapter: '第100章',
+                birthday: '???', experience: '原值夜者高级执事，叛逃后成为序列4"守夜人"。克莱恩、伦纳德、戴莉的共同仇敌。' },
+            { id: '西里斯', name: '西里斯·阿瑞匹斯', alias: '极光会成员', factions: ['极光会'], chapter: '第50章', birthday: '???',
+                experience: '表面身份为廷根市豪尔斯街区19号的布料商人，曾向兰尔乌斯传授祈求"真实造物主"降临的仪式方法。' },
+            { id: '真实造物主', name: '真实造物主', alias: '邪神 · 堕落/牺牲权柄', factions: ['高位序列', '极光会'], chapter: '第70章',
+                birthday: '1月1日', experience: '远古太阳神陨落后诞生的邪神，执掌"堕落""牺牲"等权柄，是极光会的信仰对象。' },
+            { id: '安德森', name: '安德森·胡德', alias: '最强猎人 · 序列5收割者', factions: ['其他重要人物'], chapter: '第150章',
+                birthday: '2月5日', experience: '宝藏猎人，"猎人"途径序列5"收割者"，人称"最强猎人"。性格狂妄但实力强悍。' },
+            { id: '门先生', name: '门先生 · 伯特利·亚伯拉罕', alias: '学徒途径天使之王', factions: ['高位序列'], chapter: '第180章',
+                birthday: '2月11日', experience: '第四纪亚伯拉罕家族先祖，"学徒"途径天使之王，封印在"门"背后，与克莱恩有多次交集。' },
+            { id: '阿罗德斯', name: '阿罗德斯', alias: '封印物·银镜', factions: ['其他重要人物'], chapter: '第80章', birthday: '2月28日',
+                experience: '封印物"银镜"，有活着的特性，会向主人问好，是克莱恩早期的重要道具。' },
+            { id: '卷毛狒狒', name: '卷毛狒狒', alias: '读者群体·官方读者节', factions: ['其他重要人物'], chapter: '—', birthday: '4月1日',
+                experience: '《诡秘之主》读者群体的代称，4月1日为官方读者节，象征读者与作品的羁绊。' },
+            { id: '莎伦', name: '莎伦', alias: '玫瑰学派节制派', factions: ['其他重要人物'], chapter: '第200章', birthday: '7月15日',
+                experience: '玫瑰学派节制派成员，后与塔罗会关系密切，是一位强大的非凡者。' },
+            { id: '索伦梅迪奇', name: '索伦·艾因霍恩·梅迪奇', alias: '红天使恶灵', factions: ['高位序列'], chapter: '第160章',
+                birthday: '7月29日', experience: '红天使恶灵，远古太阳神麾下天使之王，被封印后成为重要威胁。' },
+            { id: '弗莱', name: '弗莱', alias: '廷根市值夜者新任队长', factions: ['值夜者'], chapter: '第120章', birthday: '9月6日',
+                experience: '廷根市值夜者小队在邓恩牺牲后的新任队长，梦想做画家。' },
+            { id: '蕾妮特', name: '蕾妮特·缇尼科尔', alias: '灵界信使', factions: ['其他重要人物'], chapter: '第140章',
+                birthday: '12月16日', experience: '灵界信使，玫瑰学派节制派前首领，与克莱恩有契约关系。' },
+            { id: '弗兰克', name: '弗兰克·李', alias: '未来号大副 · 耕种者途径', factions: ['其他重要人物'], chapter: '第220章',
+                birthday: '12月26日', experience: '"未来号"大副，"耕种者"途径非凡者，性格随和。' },
+        ];
+
+        // ---- 势力定义 ----
+        const factionDefs = {
+            '塔罗会': { icon: '🃏', color: '#d4c5a0', desc: '愚者创立的隐秘集会' },
+            '值夜者': { icon: '🌙', color: '#5a9a7a', desc: '黑荆棘安保公司 · 廷根小队' },
+            '红手套': { icon: '🧤', color: '#b05a5a', desc: '黑夜教会精英非凡者小队' },
+            '鲁恩王国': { icon: '👑', color: '#6a8ab0', desc: '贝克兰德上流社会' },
+            '白银城': { icon: '🏛️', color: '#b8a0a0', desc: '神弃之地的最后堡垒 · 六人议事团' },
+            '高位序列': { icon: '⚡', color: '#c06060', desc: '神灵与天使之王' },
+            '正神教会': { icon: '⛪', color: '#5a8ab0', desc: '三大正神信仰' },
+            '极光会': { icon: '🌌', color: '#7a5aaa', desc: '崇拜真实造物主的隐秘组织' },
+            '莫雷蒂家族': { icon: '🏠', color: '#4a8a6a', desc: '克莱恩的家人' },
+            '其他重要人物': { icon: '📌', color: '#7a9a7a', desc: '关键角色与盟友' },
+            '愚者': { icon: '🃏', color: '#b8952e', desc: '克莱恩本体与马甲' },
+        };
+
+        // ---- 事件数据 ----
+        const events = [
+            { id: 'honest_hall', title: '诚实大厅', heat: 5, desc: '克莱恩在贝克兰德建立的神秘集会场所，以"诚实"为名贩卖情报、超凡物品与隐秘消息，是塔罗会的重要延伸。',
+                involved: ['克莱恩', '奥黛丽', '阿尔杰'], chapter: '第168章起', tags: ['塔罗会', '贝克兰德'] },
+            { id: 'subterror', title: '邪神子嗣事件', heat: 4, desc: '廷根市邪神子嗣降临，值夜者小队拼死激战。邓恩队长牺牲，老尼尔失控，克莱恩晋升序列7"魔术师"。',
+                involved: ['克莱恩', '邓恩', '老尼尔', '伦纳德'], chapter: '第80-100章', tags: ['廷根市', '值夜者'],
+                quote: '"我们是守护者，也是一群时刻对抗着危险和疯狂的可怜虫。" "我们拯救了廷根。" —— 邓恩·史密斯' },
+            { id: 'fog', title: '贝克兰德大雾霾', heat: 4, desc: '贝克兰德遭遇史无前例的大雾霾，非凡事件频发。克莱恩、奥黛丽、阿尔杰等人深入调查，揭露隐藏的阴谋。',
+                involved: ['克莱恩', '奥黛丽', '阿尔杰'], chapter: '第100-120章', tags: ['贝克兰德', '塔罗会'] },
+            { id: 'bloodmoon', title: '血月事件', heat: 3, desc: '血月降临，阿蒙与亚当的争斗白热化。克莱恩卷入其中，与阿蒙宿命对抗，揭开远古太阳神陨落的真相。',
+                involved: ['克莱恩', '阿蒙', '亚当'], chapter: '第200-230章', tags: ['高位序列', '宿命'] },
+            { id: 'abyss', title: '神弃之地 · 巨人王庭决战', heat: 3, desc: '白银城探索巨人王庭，与暗天使萨斯利尔恶灵决战。科林·伊利亚特殒落，洛薇雅牺牲，白银城最终迁出神弃之地。',
+                involved: ['戴里克', '克莱恩', '科林', '洛薇雅', '永恒烈阳'], chapter: '第138-150章', tags: ['白银城', '愚者教会'],
+                quote: '"我没有背叛白银城……" —— 洛薇雅·蒂芙尼' },
+            { id: 'blackemperor', title: '黑皇帝', heat: 3, desc: '罗塞尔·古斯塔夫的日记和遗物成为克莱恩探索神秘世界的指南。其"黑皇帝"序列与黄昏隐士会、亚当的谋划密切相关。',
+                involved: ['罗塞尔', '亚当', '克莱恩'], chapter: '第4章及后续', tags: ['罗塞尔', '黄昏隐士会'] },
+            { id: 'roselle_diary', title: '罗塞尔日记', heat: 3, desc: '穿越者前辈罗塞尔留下的神秘日记，以中文书写，成为克莱恩了解非凡世界秘密的重要线索。',
+                involved: ['罗塞尔', '克莱恩'], chapter: '第4章起', tags: ['罗塞尔', '神秘学'] },
+            { id: 'fool_church', title: '愚者教会建立', heat: 2, desc: '克莱恩以"愚者"之名建立的隐秘教会，在神弃之地、贝克兰德等地发展信徒，成为第五纪的重要非凡势力。',
+                involved: ['克莱恩', '戴里克', '达尼兹'], chapter: '第350章起', tags: ['愚者教会', '塔罗会'] },
+            { id: 'amon_clash', title: '阿蒙与克莱恩的对抗', heat: 4, desc: '克莱恩与阿蒙的宿命对决贯穿全书，从"错误"途径的争夺到源堡的归属，是全书最具张力的宿敌关系。',
+                involved: ['克莱恩', '阿蒙'], chapter: '第180章起', tags: ['宿敌', '高位序列'] },
+            { id: 'ins_vengeance', title: '因斯·赞格威尔决战 · 复仇之舞', heat: 4,
+                desc: '克莱恩、伦纳德、戴莉三人联手狩猎叛逃值夜者因斯·赞格威尔。戴莉强行与灵界生物缔结契约濒临失控，克莱恩用秘偶化中止异变，戴莉在与克莱恩变化成的邓恩·史密斯跳完最后一支舞后满足地死去。',
+                involved: ['克莱恩', '伦纳德', '戴莉', '因斯'], chapter: '第200章', tags: ['值夜者', '复仇', '红手套'],
+                quote: '"刚才那一枪是替戴莉女士打的。" —— 克莱恩<br>"这一枪是伦纳德的。" —— 克莱恩' },
+        ];
+
+        // ---- 时间线数据 ----
+        const timelineData = [
+            { time: '第五纪 1349年 6月28日', title: '克莱恩穿越 · 塔罗会成立',
+                desc: '周明瑞穿越至克莱恩·莫雷蒂的尸体上，完成"转运仪式"后进入灰雾之上，意外拉入奥黛丽·霍尔和阿尔杰·威尔逊，塔罗会就此诞生。',
+                quote: '', tags: ['塔罗会', '愚者'] },
+            { time: '第五纪 1349年 7月', title: '克莱恩加入值夜者', desc: '克莱恩正式加入廷根市值夜者小队，在邓恩·史密斯队长麾下开始非凡者生涯。',
+                quote: '', tags: ['值夜者'] },
+            { time: '第五纪 1349年 8-9月', title: '邪神子嗣降临 · 邓恩牺牲',
+                desc: '极光会成员西里斯·阿瑞匹斯传授仪式方法，兰尔乌斯欺骗胡德·欧根导致梅高欧丝孕育邪神子嗣。值夜者小队拼死阻止，邓恩·史密斯队长牺牲，老尼尔失控。',
+                quote: '"我们是守护者，也是一群时刻对抗着危险和疯狂的可怜虫。" "我们拯救了廷根。" —— 邓恩·史密斯',
+                tags: ['廷根市', '值夜者', '极光会'] },
+            { time: '第五纪 1350年', title: '贝克兰德大雾霾', desc: '贝克兰德遭遇史无前例的大雾霾，克莱恩、奥黛丽、阿尔杰等人深入调查，揭露隐藏的阴谋。',
+                quote: '', tags: ['贝克兰德', '塔罗会'] },
+            { time: '第五纪 1350年', title: '因斯·赞格威尔决战 · 戴莉之死',
+                desc: '克莱恩、伦纳德、戴莉联手狩猎叛逃值夜者因斯·赞格威尔。戴莉强行与灵界生物缔结契约濒临失控，克莱恩用秘偶化中止异变，戴莉在与克莱恩变化成的邓恩·史密斯跳完最后一支舞后满足地死去。',
+                quote: '"刚才那一枪是替戴莉女士打的。" —— 克莱恩', tags: ['值夜者', '复仇', '红手套'] },
+            { time: '第五纪 1350年', title: '白银城 · 巨人王庭决战',
+                desc: '白银城在"愚者"协助下探索巨人王庭，与暗天使萨斯利尔恶灵激战。首席科林·伊利亚特殒落，洛薇雅长老被真实造物主污染后拼死给予萨斯利尔最后一击，消散在空中。',
+                quote: '"我没有背叛白银城……" —— 洛薇雅·蒂芙尼', tags: ['白银城', '愚者教会'] },
+            { time: '第五纪 1351年', title: '血月事件 · 阿蒙与亚当的博弈',
+                desc: '血月降临，阿蒙与亚当的争斗白热化。克莱恩卷入其中，与阿蒙宿命对抗，揭开远古太阳神陨落的真相。', quote: '',
+                tags: ['高位序列', '宿命'] },
+            { time: '第五纪 1352年', title: '愚者教会建立 · 白银城迁出神弃之地',
+                desc: '白银城全体居民在"愚者"引领下离开神弃之地，迁至拜亚姆建立新白银城，改信"愚者"。',
+                quote: '"去打开那扇门吧，我想看一看外面的阳光是什么样子……" —— 科林·伊利亚特', tags: ['白银城', '愚者教会'] },
+        ];
+
+        // ================================================================
+        //  2. 渲染引擎
+        // ================================================================
+
+        function groupByFaction(characters, factionDefs) {
+            const groups = {};
+            Object.keys(factionDefs).forEach(f => { groups[f] = []; });
+            characters.forEach(c => {
+                c.factions.forEach(f => {
+                    if (groups[f]) groups[f].push(c);
+                });
+            });
+            Object.keys(groups).forEach(f => {
+                if (groups[f].length === 0) delete groups[f];
+            });
+            return groups;
+        }
+
+        function renderHome() {
+            const uniqueChars = new Set(characters.map(c => c.id)).size;
+            const totalFactions = Object.keys(factionDefs).length;
+            const totalEvents = events.length;
+            const maxHeat = Math.max(...events.map(e => e.heat));
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><div class="num">${uniqueChars}</div><div class="label">📌 角色</div></div>
+                <div class="stat-card"><div class="num">${totalFactions}</div><div class="label">🏴 势力</div></div>
+                <div class="stat-card"><div class="num">${totalEvents}</div><div class="label">📖 事件</div></div>
+                <div class="stat-card"><div class="num">${maxHeat}🔥</div><div class="label">最高热度</div></div>
+            `;
+        }
+
+        function renderCharacters() {
+            const groups = groupByFaction(characters, factionDefs);
+            const container = document.getElementById('factionContainer');
+            let html = '';
+            const order = ['塔罗会', '值夜者', '红手套', '白银城', '极光会', '鲁恩王国', '高位序列', '正神教会', '莫雷蒂家族',
+                '其他重要人物', '愚者'
+            ];
+            const sortedKeys = Object.keys(groups).sort((a, b) => {
+                const ia = order.indexOf(a);
+                const ib = order.indexOf(b);
+                if (ia === -1 && ib === -1) return a.localeCompare(b);
+                if (ia === -1) return 1;
+                if (ib === -1) return -1;
+                return ia - ib;
+            });
+            sortedKeys.forEach(fKey => {
+                const chars = groups[fKey];
+                const def = factionDefs[fKey];
+                if (!def) return;
+                html += `<div class="faction-block" style="border-left: 4px solid ${def.color};">
+                    <div class="faction-header"><span class="icon">${def.icon}</span><span class="name">${fKey}</span><span class="count">${chars.length} 人</span></div>
+                    <div class="faction-grid">`;
+                chars.forEach(c => {
+                    const tagHtml = c.factions.filter(f => f !== fKey).slice(0, 2).map(f => {
+                        const col = factionDefs[f] ? factionDefs[f].color : '#3a3440';
+                        return `<span class="tag" style="border-color:${col};">${f}</span>`;
+                    }).join('');
+                    html += `<div class="char-card" data-charid="${c.id}">
+                        <div class="name">${c.name}</div>
+                        <div class="sub">${c.alias}</div>
+                        <div class="tags"><span class="tag gold">${fKey}</span>${tagHtml}</div>
+                        <div class="chapter">📖 ${c.chapter}</div>
+                        <div class="click-hint">🖱️ 点击查看详情</div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+            document.querySelectorAll('.char-card').forEach(el => {
+                el.addEventListener('click', function() {
+                    const id = this.dataset.charid;
+                    const charData = characters.find(c => c.id === id);
+                    if (charData) openModal(charData);
+                });
+            });
+        }
+
+        // ---- 模态框 ----
+        const modalOverlay = document.getElementById('charModal');
+        const modalClose = document.getElementById('modalClose');
+
+        function openModal(char) {
+            document.getElementById('modalName').textContent = char.name;
+            document.getElementById('modalAlias').textContent = char.alias || '';
+            document.getElementById('modalBirthday').textContent = char.birthday || '未知';
+            document.getElementById('modalChapter').textContent = char.chapter || '';
+            document.getElementById('modalExperience').textContent = char.experience || '暂无介绍';
+            const container = document.getElementById('modalFactions');
+            container.innerHTML = char.factions.map(f => {
+                const color = factionDefs[f] ? factionDefs[f].color : '#3a3440';
+                return `<span class="tag" style="border-color:${color};">${f}</span>`;
+            }).join('');
+            document.getElementById('modalExtra').textContent = '';
+            modalOverlay.classList.add('active');
+        }
+        modalClose.addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+        });
+
+        function renderEvents() {
+            const container = document.getElementById('eventContainer');
+            const sorted = [...events].sort((a, b) => b.heat - a.heat || a.title.localeCompare(b.title));
+            let html = '<div class="event-grid">';
+            sorted.forEach(e => {
+                const stars = '🔥'.repeat(Math.min(e.heat, 5)) + '☆'.repeat(Math.max(0, 5 - e.heat));
+                const tagsHtml = e.tags.map(t => `<span class="badge">${t}</span>`).join('');
+                const involvedHtml = e.involved.slice(0, 4).map(name =>
+                    `<span class="badge" style="background:#2a2430;border-color:#b8952e;">${name}</span>`
+                ).join('') + (e.involved.length > 4 ? `<span class="badge">+${e.involved.length-4}</span>` :
+                '');
+                const quoteHtml = e.quote ? `<div class="quote">${e.quote}</div>` : '';
+                html += `<div class="event-card">
+                    <div class="top"><div class="title">${e.title}</div><div class="heat">${stars}</div></div>
+                    <div class="desc">${e.desc}</div>${quoteHtml}
+                    <div class="meta"><strong>📖 章节：</strong>${e.chapter}</div>
+                    <div class="badge-group">${tagsHtml}</div>
+                    <div class="badge-group" style="margin-top:6px;"><span style="font-size:11px; color:#7a7066; margin-right:4px;">👤 涉及：</span>${involvedHtml}</div>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            let html = '<div class="timeline">';
+            timelineData.forEach(item => {
+                const quoteHtml = item.quote ? `<div class="quote">${item.quote}</div>` : '';
+                const tagsHtml = item.tags.map(t => `<span class="badge">${t}</span>`).join('');
+                html += `<div class="timeline-item">
+                    <div class="time">${item.time}</div>
+                    <div class="title">${item.title}</div>
+                    <div class="desc">${item.desc}</div>${quoteHtml}
+                    <div class="badge-group" style="margin-top:6px;">${tagsHtml}</div>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderBirthday() {
+            const now = new Date();
+            const currentMonth = now.getMonth() + 1;
+            const container = document.getElementById('birthdayContainer');
+            const birthdayChars = characters.filter(c => {
+                if (!c.birthday || c.birthday === '???') return false;
+                const match = c.birthday.match(/^(\d+)月/);
+                if (!match) return false;
+                return parseInt(match[1]) === currentMonth;
+            });
+            if (birthdayChars.length === 0) {
+                container.innerHTML = '<span style="font-size:13px; color:#7a7066;">本月暂无角色生日</span>';
+                return;
+            }
+            container.innerHTML = birthdayChars.map(c =>
+                `<span style="font-size:13px; color:#d4c5a0;"><strong>${c.name}</strong> <span style="color:#7a7066; font-weight:400;">· ${c.birthday}</span></span>`
+            ).join('');
+        }
+
+        // ================================================================
+        //  3. 页面切换 & 导航
+        // ================================================================
+
+        const pages = {
+            home: document.getElementById('page-home'),
+            characters: document.getElementById('page-characters'),
+            events: document.getElementById('page-events'),
+            timeline: document.getElementById('page-timeline'),
+            analysis: document.getElementById('page-analysis'),
+            discussion: document.getElementById('page-discussion'),
+        };
+
+        const navBtns = document.querySelectorAll('.nav-links button');
+        const quickLinks = document.querySelectorAll('.quick-links .ql');
+
+        function switchPage(pageId) {
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.toggle('active', key === pageId);
+            });
+            navBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === pageId);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchPage(btn.dataset.page));
+        });
+        quickLinks.forEach(el => {
+            el.addEventListener('click', () => switchPage(el.dataset.page));
+        });
+
+        // ================================================================
+        //  4. 启动
+        // ================================================================
+
+        renderHome();
+        renderCharacters();
+        renderEvents();
+        renderTimeline();
+        renderBirthday();
+
+        switchPage('home');
+
+        console.log('✅ 《诡秘之主》v6.0 已加载 — 新增作品讨论页面。');
+        console.log(`📌 共 ${characters.length} 位角色，${Object.keys(factionDefs).length} 个势力，${events.length} 个事件，${timelineData.length} 个时间节点。`);
+    </script>
+</body>
+</html>
